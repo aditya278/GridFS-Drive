@@ -1,4 +1,7 @@
 const { validationResult } = require("express-validator");
+const User = require('../models/User.model');
+const jwt = require('jsonwebtoken');
+const { jwtSecret } = require('../config/keys');
 
 const registerController = async (req, res) => {
     try {
@@ -8,7 +11,32 @@ const registerController = async (req, res) => {
                 errors : errors.array()
             });
         }
-        res.send(req.body);
+        const { email, password, name } = req.body();
+        let user = await User.findOne({email : email});
+        if(user) {
+            return res.status(400).json({
+                errors : [{
+                    msg : "User Already Exists"
+                }]
+            });
+        }
+
+        user = new User({
+            email, password, name
+        });
+        await user.save();
+
+        const payload = {
+            userId : user._id
+        };
+        jwt.sign(payload, jwtSecret, { expiredIn : "10 days" }, (err, token) => {
+            if(err) {
+                throw err;
+            }
+            res.status(200).json({
+                jwtToken : token
+            });
+        });
     }
     catch(err) {
         console.error(err.message);
