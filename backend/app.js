@@ -1,16 +1,18 @@
-var express = require('express');
-var logger = require('morgan');
+const express = require('express');
+const logger = require('morgan');
 
 require('./config/dbConnect')();
 
-var usersRouter = require('./routes/users.route');
+const usersRouter = require('./routes/users.route');
+const filesRouter = require('./routes/file.route');
 
-var app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/user', usersRouter);
+app.use('/api/file', filesRouter);
 
 module.exports = app;
