@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const {body} = require('express-validator');
-const { registerController } = require('../controllers/users.controller');
+const { registerController, loginController } = require('../controllers/users.controller');
 
 router.post('/register', [
     body("email", "Enter a valid email address").isEmail(),
@@ -20,5 +20,10 @@ router.post('/register', [
     }),
     body("name", "Name can't be empty").exists()
 ], registerController);
+
+router.post('/login', [
+    body("email", "Enter a valid email address").isEmail(),
+    body("password", "Enter a Password").exists()
+], loginController);
 
 module.exports = router;

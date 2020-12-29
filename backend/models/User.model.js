@@ -4,7 +4,7 @@ const saltRounds = 10;
 
 const Schema = mongoose.Schema;
 
-const userSchmea = new Schema({
+const userSchema = new Schema({
     name : {
         type : String,
         required : true
@@ -23,7 +23,7 @@ const userSchmea = new Schema({
     }
 });
 
-userSchmea.pre("save", async function () {
+userSchema.pre("save", async function () {
     try {
         const user = this;
         if(user.isModified("password")) {
@@ -35,4 +35,26 @@ userSchmea.pre("save", async function () {
     }
 });
 
-module.exports = mongoose.model("User", userSchmea);
+userSchema.statics.findByCredentials = async (email, password) => {
+    const user = await User.findOne({email});
+    if(!user) {
+        return {
+            error : true,
+            msg : "AuthError"
+        };
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if(!isMatch) {
+        return {
+            error : true,
+            msg : "AuthError"
+        };
+    }
+    return {
+        error : false,
+        user
+    };
+}
+
+const User = mongoose.model("User", userSchema);
+module.exports = User;

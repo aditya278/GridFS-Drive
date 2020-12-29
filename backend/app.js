@@ -1,6 +1,8 @@
 var express = require('express');
 var logger = require('morgan');
 
+require('./config/dbConnect')();
+
 var usersRouter = require('./routes/users.route');
 
 var app = express();
