@@ -90,4 +90,19 @@ const loginController = async(req, res) => {
     }
 }
 
-module.exports = { registerController, loginController };
+const getController = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select("-password");
+        res.status(200).json(user);
+    }
+    catch(err) {
+        console.error(err.message);
+        res.status(500).json({
+            errors : [ {
+                msg : "Internal Server Error"
+            } ]
+        })
+    }
+}
+
+module.exports = { registerController, loginController, getController };
