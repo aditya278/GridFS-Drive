@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -44,8 +44,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function LoginIn() {
+export default function Login() {
   const classes = useStyles();
+
+  const [formData, setFormData] = useState({
+    email : '',
+    password : ''
+  });
 
   return (
     <Container component="main" maxWidth="xs">
@@ -68,6 +73,7 @@ export default function LoginIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            value={formData.email}
           />
           <TextField
             variant="outlined"
@@ -79,6 +85,7 @@ export default function LoginIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            value={formData.password}
           />
           <Button
             type="submit"
