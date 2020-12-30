@@ -34,7 +34,7 @@ const gridGetAllUserFiles = (userId) => {
 
     const bucket = new mongodb.GridFSBucket(db, { bucketName : "drive"});
     
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const allFiles = bucket.find({
             metadata : { userId }
         });
@@ -42,7 +42,32 @@ const gridGetAllUserFiles = (userId) => {
     })
 }
 
+const gridFindFile = (fileId, userId) => {
+    const db = mongoose.connection.db;
+
+    const bucket = new mongodb.GridFSBucket(db, { bucketName : "drive"});
+    const id = new mongodb.ObjectID(fileId);
+    return new Promise((resolve) => {
+        const file = bucket.find({
+            _id : id,
+            metadata : { userId }
+        });
+        resolve(file.toArray());
+    })
+}
+
+const gridDownloadFile = (fileId) => {
+    const db = mongoose.connection.db;
+
+    const bucket = new mongodb.GridFSBucket(db, { bucketName : "drive"});
+    const id = new mongodb.ObjectID(fileId);
+
+    return bucket.openDownloadStream(id);
+}
+
 module.exports = {
     gridFileUpload,
-    gridGetAllUserFiles
+    gridGetAllUserFiles,
+    gridFindFile,
+    gridDownloadFile
 }
