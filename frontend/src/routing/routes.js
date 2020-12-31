@@ -3,6 +3,7 @@ import { LoginView, RegisterView, DashboardView } from '../views';
 import { Main, User } from '../layout';
 import { Navigate } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
+import Upload from '../components/Upload';
 
 const routes = [
     {
@@ -30,6 +31,16 @@ const routes = [
             {
                 path : "/",
                 element : <PrivateRoute element={DashboardView} />
+            }
+        ]
+    },
+    {
+        path : '/upload',
+        element : <User />,
+        children : [
+            {
+                path : "/",
+                element : <PrivateRoute element={Upload} />
             }
         ]
     }
