@@ -10,7 +10,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+import { Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { register } from '../actions/auth';
 import { setAlert } from '../actions/alert';
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function RegisterView({ register, alert, setAlert }) {
+function RegisterView({ register, alert, setAlert, auth : { isAuthenticated } }) {
   const classes = useStyles();
 
   const [formData, setFormData] = useState({
@@ -72,23 +72,29 @@ function RegisterView({ register, alert, setAlert }) {
     const { email, password, confirmPassword } = formData;
   
     //Check if valid password
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    if(!passwordRegex.test(password)) {
-      return setAlert("Please use a more secure password");
-    }
+    // const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    // if(!passwordRegex.test(password)) {
+    //   return setAlert("Please use a more secure password");
+    // }
 
     //Compare Password with Confirm Password
     if (password !== confirmPassword) {
-      return setAlert("Passwords Do not Match");
+      return setAlert("Passwords Do not Match", "error");
     }
 
     //Check if valid Email
     const emailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
-    if(!emailRegex.text(email)) {
-      return setAlert("Please enter a valid email address");
+    if(!emailRegex.test(email)) {
+      return setAlert("Please enter a valid email address", "error");
     }
 
     register(formData);
+  }
+
+  if(isAuthenticated) {
+    return (
+      <Navigate to="/dashboard" />
+    );
   }
 
   return (
@@ -99,10 +105,10 @@ function RegisterView({ register, alert, setAlert }) {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Sign Up
         </Typography>
         {
-          alert && <SimpleAlert msg={alert.msg} />
+          alert && <SimpleAlert msg={alert.msg} severity={alert.severity} />
         }
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField

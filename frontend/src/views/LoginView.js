@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,6 +10,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import SimpleAlert from '../components/SimpleAlert';
+import { connect } from 'react-redux';
+import { login } from '../actions/auth';
+import { setAlert } from '../actions/alert';
+import { Navigate } from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -44,8 +49,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+const LoginView = ({alert, auth : { isAuthenticated }, login, setAlert}) => {
   const classes = useStyles();
+
+  const [formData, setFormData] = useState({
+    email : '',
+    password : ''
+  })
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    login(formData);
+  }
+
+  const handleChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name] : event.target.value
+    });
+  }
+
+  if(isAuthenticated) {
+    return (
+      <Navigate to="/dashboard" />
+    )
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -57,7 +85,10 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        {
+          alert && <SimpleAlert msg={alert.msg} severity={alert.severity} />
+        }
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -68,6 +99,8 @@ export default function Login() {
             name="email"
             autoComplete="email"
             autoFocus
+            value={formData.email}
+            onChange={handleChange}
           />
           <TextField
             variant="outlined"
@@ -79,6 +112,8 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
+            value={formData.password}
+            onChange={handleChange}
           />
           <Button
             type="submit"
@@ -103,4 +138,8 @@ export default function Login() {
       </Box>
     </Container>
   );
-}
+};
+
+const mapStateToProps = (state) => ({ alert : state.alert, auth : state.auth });
+
+export default connect(mapStateToProps, {setAlert, login})(LoginView);

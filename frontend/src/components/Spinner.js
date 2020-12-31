@@ -1,22 +1,22 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    display: 'flex',
     '& > * + *': {
-      marginTop: theme.spacing(2),
+      marginLeft: theme.spacing(2),
     },
   },
 }));
 
-export default function SimpleAlerts({msg, severity}) {
+export default function Spinner() {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <Alert severity={severity}>{msg}</Alert>
+      <CircularProgress />
     </div>
   );
 }

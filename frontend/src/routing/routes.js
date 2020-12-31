@@ -1,7 +1,8 @@
 import React from 'react';
-import { LoginView, RegisterView } from '../views';
+import { LoginView, RegisterView, DashboardView } from '../views';
 import { Main } from '../layout';
 import { Navigate } from 'react-router-dom';
+import PrivateRoute from './PrivateRoute';
 
 const routes = [
     {
@@ -21,6 +22,10 @@ const routes = [
                 element : <Navigate to="/register" />
             }
         ]
+    },
+    {
+        path : '/dashboard',
+        element : <PrivateRoute element={DashboardView} />
     }
 ]
 

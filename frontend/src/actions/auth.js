@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { REGISTER_SUCCESS, USER_LOADED } from "./types";
+import { REGISTER_SUCCESS, USER_LOADED, REGISTER_FAILED, LOGIN_SUCCESS, LOGIN_FAILED } from "./types";
 import { setAlert } from './alert';
 
 import setAuthToken from '../utils/setAuthToken';
@@ -12,11 +12,15 @@ export const register = (formData) => async(dispatch) => {
             payload : res.data
         });
         setAuthToken(res.data.jwtToken);
-        dispatch(loadUser);
+        dispatch(loadUser());
     }
     catch(error) {
         const err = error.response.data;
-        dispatch(setAlert(err.errors[0].msg));
+        dispatch(setAlert(err.errors[0].msg, "error"));
+        dispatch({
+            type : REGISTER_FAILED
+        });
+        setAuthToken();
     }
 }
 
@@ -30,6 +34,27 @@ export const loadUser = () => async(dispatch) => {
     }
     catch(error) {
         const err = error.response.data;
-        dispatch(setAlert(err.errors[0].msg));
+        dispatch(setAlert(err.errors[0].msg, "error"));
+        setAuthToken();
+    }
+}
+
+export const login = (formData) => async(dispatch) => {
+    try {
+        const res = await axios.post("/api/user/login", formData);
+        dispatch({
+            type : LOGIN_SUCCESS,
+            payload : res.data.jwtToken
+        });
+        setAuthToken(res.data.jwtToken);
+        dispatch(loadUser());
+    }
+    catch(error) {
+        const err = error.response.data;
+        dispatch(setAlert(err.errors[0].msg, "error"));
+        dispatch({
+            type : LOGIN_FAILED
+        });
+        setAuthToken();
     }
 }
