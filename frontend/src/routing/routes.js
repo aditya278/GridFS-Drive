@@ -1,6 +1,6 @@
 import React from 'react';
 import { LoginView, RegisterView, DashboardView } from '../views';
-import { Main } from '../layout';
+import { Main, User } from '../layout';
 import { Navigate } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 
@@ -25,7 +25,13 @@ const routes = [
     },
     {
         path : '/dashboard',
-        element : <PrivateRoute element={DashboardView} />
+        element : <User />,
+        children : [
+            {
+                path : "/",
+                element : <PrivateRoute element={DashboardView} />
+            }
+        ]
     }
 ]
 
