@@ -1,0 +1,25 @@
+{
+  "name": "googleDrive-clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "frontend": "npm start --prefix frontend",
+    "backend": "npm start --prefix backend",
+    "start": "concurrently \"npm run frontend\" \"npm run backend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aditya278/GridFS-Drive.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aditya278/GridFS-Drive/issues"
+  },
+  "homepage": "https://github.com/aditya278/GridFS-Drive#readme",
+  "dependencies": {
+    "concurrently": "^5.3.0"
+  }
+}

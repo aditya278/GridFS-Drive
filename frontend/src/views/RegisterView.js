@@ -10,7 +10,12 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { useSnackbar } from 'notistack';
+
+import { connect } from 'react-redux';
+import { register } from '../actions/auth';
+import { setAlert } from '../actions/alert';
+
+import SimpleAlert from '../components/SimpleAlert';
 
 function Copyright() {
   return (
@@ -45,33 +50,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+function RegisterView({ register, alert, setAlert }) {
   const classes = useStyles();
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const [formData, setFormData] = useState({
-    name : '',
-    email : '',
-    password : '',
-    confirmPassword : ''
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
   })
 
   const handleChange = (event) => {
     setFormData({
       ...formData,
-      [event.target.name] : event.target.value
+      [event.target.name]: event.target.value
     })
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const { password, confirmPassword } = formData;
-    if(password !== confirmPassword) {
-      return enqueueSnackbar("Passwords Do not Match", {
-        variant : "error"
-      });
+    const { email, password, confirmPassword } = formData;
+  
+    //Check if valid password
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if(!passwordRegex.test(password)) {
+      return setAlert("Please use a more secure password");
     }
+
+    //Compare Password with Confirm Password
+    if (password !== confirmPassword) {
+      return setAlert("Passwords Do not Match");
+    }
+
+    //Check if valid Email
+    const emailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+    if(!emailRegex.text(email)) {
+      return setAlert("Please enter a valid email address");
+    }
+
+    register(formData);
   }
 
   return (
@@ -84,6 +101,9 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+        {
+          alert && <SimpleAlert msg={alert.msg} />
+        }
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
@@ -129,7 +149,7 @@ export default function SignIn() {
             required
             fullWidth
             name="confirmPassword"
-            label="Password"
+            label="Confirm Password"
             type="password"
             id="confirmPassword"
             autoComplete="current-password"
@@ -160,3 +180,7 @@ export default function SignIn() {
     </Container>
   );
 }
+
+const mapStateToProps = state => ({ alert: state.alert, auth: state.auth });
+
+export default connect(mapStateToProps, { register, setAlert })(RegisterView);
