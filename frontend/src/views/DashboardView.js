@@ -8,7 +8,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getAllFiles, downloadFile } from '../actions/file';
 
@@ -23,6 +22,7 @@ const DashboardView = ({files, getAllFiles, downloadFile}) => {
   const classes = useStyles();
   useEffect(() => {
     getAllFiles();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const downloadHandler = (id, filename) => {

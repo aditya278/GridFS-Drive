@@ -43,6 +43,10 @@ const routes = [
                 element : <PrivateRoute element={Upload} />
             }
         ]
+    },
+    {
+        path : "/logout",
+        element : <Navigate to="/login" />
     }
 ]
 

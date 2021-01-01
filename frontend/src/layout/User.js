@@ -16,7 +16,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+import BackupIcon from '@material-ui/icons/Backup';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Outlet, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { logoutUser } from '../actions/auth';
 
 const drawerWidth = 240;
 
@@ -78,10 +82,14 @@ const useStyles = makeStyles((theme) => ({
   linkStyle : {
       textDecoration : "none",
       color : "inherit"
+  },
+  logoutBtn : {
+      display: "flex",
+    justifyContent: 'flex-end'
   }
 }));
 
-export default function PersistentDrawerLeft() {
+function User({logoutUser}) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -148,9 +156,20 @@ export default function PersistentDrawerLeft() {
             <Link to="/upload" className={classes.linkStyle}>
                 <ListItem button>
                     <ListItemIcon>
-                    <InboxIcon />
+                    <BackupIcon />
                     </ListItemIcon>
                 <ListItemText primary={"Upload File"} />
+                </ListItem>
+            </Link>
+        </List>
+        <Divider />
+        <List>
+            <Link to="/logout" onClick={logoutUser} className={classes.linkStyle}>
+                <ListItem button>
+                    <ListItemIcon>
+                    <ExitToAppIcon />
+                    </ListItemIcon>
+                <ListItemText primary={"Logout"} />
                 </ListItem>
             </Link>
         </List>
@@ -167,3 +186,5 @@ export default function PersistentDrawerLeft() {
     </div>
   );
 }
+
+export default connect(null, {logoutUser})(User);

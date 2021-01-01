@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { REGISTER_SUCCESS, USER_LOADED, REGISTER_FAILED, LOGIN_SUCCESS, LOGIN_FAILED, USER_LOAD_FAILED } from '../actions/types';
+import { REGISTER_SUCCESS, USER_LOADED, REGISTER_FAILED, LOGIN_SUCCESS, LOGIN_FAILED, USER_LOAD_FAILED, LOGOUT_USER } from '../actions/types';
 
 const initialState = {
     user : null,
@@ -28,6 +28,7 @@ export default (state=initialState, action) => {
         case REGISTER_FAILED:
         case LOGIN_FAILED:
         case USER_LOAD_FAILED:
+        case LOGOUT_USER:
             return {
                 user : null,
                 loading : false,
