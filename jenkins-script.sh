@@ -6,4 +6,4 @@ cd ..
 cd backend/
 npm install
 cd ..
-pm2 restart all
+sudo pm2 restart all
