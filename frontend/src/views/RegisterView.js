@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Navigate } from 'react-router-dom';
@@ -21,8 +22,8 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+      <Link color="inherit" href="https://iadityashukla.com/">
+        Aditya Shukla
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -48,6 +49,15 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  passwordTextGreen : {
+    color : "#388e3c"
+  },
+  passwordTextRed : {
+    color : '#FB9EBF'
+  },
+  passwordTextPink : {
+    color : '#F50057'
+  }
 }));
 
 function RegisterView({ register, alert, setAlert, auth : { isAuthenticated } }) {
@@ -60,7 +70,70 @@ function RegisterView({ register, alert, setAlert, auth : { isAuthenticated } })
     confirmPassword: ''
   })
 
+  const [passwordStrength, setPasswordStrength] = useState({
+    score : 0,
+    msg: "",
+    color : ''
+  });
+
+  function scorePassword(pass) {
+    var score = 0;
+    if (!pass)
+        return score;
+
+    // award every unique letter until 5 repetitions
+    var letters = {};
+    for (var i=0; i<pass.length; i++) {
+        letters[pass[i]] = (letters[pass[i]] || 0) + 1;
+        score += 5.0 / letters[pass[i]];
+    }
+
+    // bonus points for mixing it up
+    var variations = {
+        digits: /\d/.test(pass),
+        lower: /[a-z]/.test(pass),
+        upper: /[A-Z]/.test(pass),
+        nonWords: /\W/.test(pass),
+    }
+
+    var variationCount = 0;
+    for (var check in variations) {
+        variationCount += (variations[check] === true) ? 1 : 0;
+    }
+    score += (variationCount - 1) * 10;
+    if(score > 100)
+      score = 100;
+    return parseInt(score);
+  }
+
+  function checkPassStrength(pass) {
+      const score = scorePassword(pass);
+      let msg = 'Weak';
+      let color = "secondary";
+      if (score > 80) {
+        msg = "Strong";
+        color = "primary"
+      }
+      else if (score > 60) {
+        msg = "Fine";
+        color = "secondary"
+      }
+      else if (score >= 30) {
+        msg = "Weak";
+        color = "secondary"
+      }
+      else if(score === 0) {
+        msg = '';
+        color = '';
+      }
+
+      setPasswordStrength({score, msg, color});
+  }
+
   const handleChange = (event) => {
+    if(event.target.name === "password") {
+      checkPassStrength(event.target.value);
+    }
     setFormData({
       ...formData,
       [event.target.name]: event.target.value
@@ -70,16 +143,14 @@ function RegisterView({ register, alert, setAlert, auth : { isAuthenticated } })
   const handleSubmit = (event) => {
     event.preventDefault();
     const { email, password, confirmPassword } = formData;
-  
-    //Check if valid password
-    // const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    // if(!passwordRegex.test(password)) {
-    //   return setAlert("Please use a more secure password");
-    // }
 
     //Compare Password with Confirm Password
     if (password !== confirmPassword) {
       return setAlert("Passwords Do not Match", "error");
+    }
+
+    if(passwordStrength['score'] < 80) {
+      return setAlert("Please use a more secure password.", "error");
     }
 
     //Check if valid Email
@@ -149,6 +220,14 @@ function RegisterView({ register, alert, setAlert, auth : { isAuthenticated } })
             value={formData.password}
             onChange={handleChange}
           />
+          <Box display="flex" alignItems="center">
+            <Box width="100%" mr={1}>
+              <LinearProgress variant="determinate" value={passwordStrength['score']} color={passwordStrength['color']} />
+            </Box>
+            <Box minWidth={40}>
+              <Typography variant="body2" color="textPrimary" className={passwordStrength['score'] > 80 ? classes.passwordTextGreen : passwordStrength['score'] > 60 ? classes.passwordTextPink : classes.passwordTextRed}><b>{passwordStrength['msg']}</b></Typography>
+            </Box>
+          </Box>
           <TextField
             variant="outlined"
             margin="normal"
