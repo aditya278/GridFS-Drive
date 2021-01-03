@@ -5,5 +5,5 @@ npm run build
 cd ..
 cd backend/
 npm install
-sudo pm2 ./bin/www --name "GridFS-Drive"
+sudo pm2 start ./bin/www --name "GridFS-Drive"
 cd ..
