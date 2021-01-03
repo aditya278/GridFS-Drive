@@ -9,3 +9,5 @@ export const USER_LOAD_FAILED = "USER_LOAD_FAILED";
 export const LOAD_FILES = "LOAD_FILES";
 export const REMOVE_FILES = "REMOVE_FILES";
 export const LOGOUT_USER = "LOGOUT_USER";
+export const SET_LOADING = "SET_LOADING";
+export const RESET_LOADING = "RESET_LOADING";

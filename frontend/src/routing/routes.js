@@ -1,53 +1,53 @@
-import React from 'react';
-import { LoginView, RegisterView, DashboardView } from '../views';
-import { Main, User } from '../layout';
-import { Navigate } from 'react-router-dom';
-import PrivateRoute from './PrivateRoute';
-import Upload from '../components/Upload';
+import React from "react";
+import { LoginView, RegisterView, DashboardView } from "../views";
+import { Main, User } from "../layout";
+import { Navigate } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
+import Upload from "../components/Upload";
 
 const routes = [
     {
-        path : "/",
+        path: "/dashboard",
+        element: <User />,
+        children: [
+            {
+                path: "/",
+                element: <PrivateRoute element={DashboardView} />,
+            },
+        ],
+    },
+    {
+        path: "/upload",
+        element: <User />,
+        children: [
+            {
+                path: "/",
+                element: <PrivateRoute element={Upload} />,
+            },
+        ],
+    },
+    {
+        path: "/logout",
+        element: <Navigate to="/login" />,
+    },
+    {
+        path: "/",
         element: <Main />,
         children: [
             {
-                path : "login",
-                element : <LoginView />
+                path: "login",
+                element: <LoginView />,
             },
             {
-                path : "register",
-                element : <RegisterView />
+                path: "register",
+                element: <RegisterView />,
             },
             {
-                path : "/",
-                element : <Navigate to="/register" />
-            }
-        ]
+                path: "/",
+                element: <Navigate to="/register" />,
+            },
+        ],
     },
-    {
-        path : '/dashboard',
-        element : <User />,
-        children : [
-            {
-                path : "/",
-                element : <PrivateRoute element={DashboardView} />
-            }
-        ]
-    },
-    {
-        path : '/upload',
-        element : <User />,
-        children : [
-            {
-                path : "/",
-                element : <PrivateRoute element={Upload} />
-            }
-        ]
-    },
-    {
-        path : "/logout",
-        element : <Navigate to="/login" />
-    }
-]
+];
 
 export default routes;
