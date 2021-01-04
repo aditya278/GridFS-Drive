@@ -94,6 +94,7 @@ function RegisterView({ register, alert, setAlert, auth : { isAuthenticated } })
         lower: /[a-z]/.test(pass),
         upper: /[A-Z]/.test(pass),
         nonWords: /\W/.test(pass),
+        length : (pass.length >= 8)
     }
 
     var variationCount = 0;

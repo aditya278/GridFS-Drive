@@ -8,11 +8,11 @@ const auth = require('../middleware/auth.middleware');
 router.post('/register', [
     body("email", "Enter a valid email address").isEmail(),
     body("password").custom((value) => {
-        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{8,}$/;
         if(regex.test(value)) {
             return true;
         }
-        throw new Error("Enter a valid password i.e. 8 character alphanumeric");
+        throw new Error("Enter a valid password i.e. 8 character alphanumeric with special characters.");
     }),
     body("confirmPassword").custom((value, {req}) => {
         if(value === req.body.password) {
