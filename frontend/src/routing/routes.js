@@ -1,5 +1,5 @@
 import React from "react";
-import { LoginView, RegisterView, DashboardView } from "../views";
+import { LoginView, RegisterView, DashboardView, SharedFileView } from "../views";
 import { Main, User } from "../layout";
 import { Navigate } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
@@ -47,6 +47,10 @@ const routes = [
                 element: <Navigate to="/register" />,
             },
         ],
+    },
+    {
+        path: "/shared/:fileId",
+        element: <SharedFileView />,
     },
 ];
 

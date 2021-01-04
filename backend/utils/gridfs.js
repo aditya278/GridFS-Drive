@@ -18,7 +18,8 @@ const gridFileUpload = (file, userId) => {
     return new Promise((resolve, reject) => {
         bufferToStream(buffer).pipe(bucket.openUploadStream(file.originalname, {
             metadata : { userId },
-            contentType : file.mimetype
+            contentType : file.mimetype,
+            isShared : false
         }))
         .on("error", function(error) {
             reject(error);
@@ -39,6 +40,26 @@ const gridGetAllUserFiles = (userId) => {
             metadata : { userId }
         });
         resolve(allFiles.toArray());
+    })
+}
+
+const gridGetSharedFile = (fileId) => {
+    const db = mongoose.connection.db;
+
+    const bucket = new mongodb.GridFSBucket(db, { bucketName : "drive"});
+    const id = new mongodb.ObjectID(fileId);
+    return new Promise((resolve, reject) => {
+        try {
+            const file = bucket.find({
+                _id : id,
+                isShared : true
+            });
+            resolve(file.toArray());
+        }
+        catch(err) {
+            reject(err.message);
+        }
+        
     })
 }
 
@@ -65,9 +86,26 @@ const gridDownloadFile = (fileId) => {
     return bucket.openDownloadStream(id);
 }
 
+const gridDeleteFile = (fileId) => {
+    const db = mongoose.connection.db;
+
+    const bucket = new mongodb.GridFSBucket(db, { bucketName : "drive"});
+    const id = new mongodb.ObjectID(fileId);
+    return new Promise((resolve, reject) => {
+        const file = bucket.delete(id, (error) => {
+            if(error)
+                reject(error);
+            else
+                resolve(true);
+        })
+    })
+}
+
 module.exports = {
     gridFileUpload,
     gridGetAllUserFiles,
     gridFindFile,
-    gridDownloadFile
+    gridDownloadFile,
+    gridGetSharedFile,
+    gridDeleteFile
 }
